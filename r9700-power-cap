@@ -1,0 +1,20 @@
+#!/bin/sh
+set -eu
+
+DEVICE_ID=0x7551
+CAP_UW=210000000
+
+found=0
+for dev in /sys/bus/pci/drivers/amdgpu/*:*:*.*; do
+	[ "$(cat "$dev/device")" = "$DEVICE_ID" ] || continue
+	for hwmon in "$dev"/hwmon/hwmon*; do
+		echo "$CAP_UW" > "$hwmon/power1_cap"
+		echo "$(basename "$dev"): power1_cap=$CAP_UW"
+		found=$((found + 1))
+	done
+done
+
+if [ "$found" -eq 0 ]; then
+	echo "no amdgpu device with id $DEVICE_ID found" >&2
+	exit 1
+fi

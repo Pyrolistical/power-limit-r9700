@@ -1,0 +1,11 @@
+[Unit]
+Description=Set power limit on all Radeon AI PRO R9700 GPUs
+After=sysinit.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/bin/r9700-power-cap
+
+[Install]
+WantedBy=multi-user.target
